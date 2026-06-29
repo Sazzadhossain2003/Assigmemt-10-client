@@ -121,7 +121,7 @@ const BannerSection = () => {
         'Get exclusive access to verified wisdom from world-class experts. Unlimited publishing.',
       // Logic: If already premium, show "Go to Dashboard"
       btnPrimary: isPremium ? 'View Dashboard' : 'Upgrade Premium',
-      pathPrimary: isPremium ? '/dashboard/user' : '/dashboard/user/upgrade',
+      pathPrimary: isPremium ? '/dashboard/user' : '/pricing',
       btnSecondary: 'See Pricing',
       pathSecondary: '/dashboard/user/upgrade',
       themeColor: '#d97706',
