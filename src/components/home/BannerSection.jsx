@@ -13,6 +13,7 @@ import {
   BrainCircuit,
 } from 'lucide-react';
 import Link from 'next/link';
+import { authClient } from '@/lib/auth-client';
 
 // Swiper CSS
 import 'swiper/css';
@@ -20,137 +21,148 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/effect-fade';
 
-const sliderData = [
-  {
-    id: 1,
-    image: '/asstes/img2.png',
-    badgeIcon: <Sparkles className="w-4 h-4" />,
-    badgeText: 'Preserve Your Wisdom',
-    title: 'Every Experience Becomes A Life Lesson',
-    description:
-      'Document your breakthroughs, learn from collective experiences, and build a permanent digital archive.',
-    btnPrimary: 'Start Writing',
-    btnSecondary: 'Explore Lessons',
-    themeColor: '#6366f1',
-    // --- Right Section Data ---
-    rightCard: (
-      <div className="relative w-full max-w-[350px] aspect-[4/3] bg-white/10 backdrop-blur-2xl rounded-3xl border border-white/20 p-8 shadow-2xl">
-        <div className="flex items-center gap-4 mb-6">
-          <div className="w-12 h-12 bg-indigo-500 rounded-xl flex items-center justify-center text-white shadow-lg shadow-indigo-500/30">
-            <BrainCircuit size={24} />
-          </div>
-          <div>
-            <h4 className="text-white font-bold">Growth Mindset</h4>
-            <p className="text-white/40 text-[10px] uppercase font-black">
-              Core Lesson
-            </p>
-          </div>
-        </div>
-        <div className="space-y-3 opacity-30">
-          <div className="h-2 w-full bg-white rounded-full"></div>
-          <div className="h-2 w-3/4 bg-white rounded-full"></div>
-          <div className="h-2 w-1/2 bg-white rounded-full"></div>
-        </div>
-        <div className="mt-10 flex items-center justify-between border-t border-white/10 pt-4">
-          <div className="flex -space-x-2">
-            {[1, 2, 3].map(i => (
-              <div
-                key={i}
-                className="w-8 h-8 rounded-full border-2 border-[#1a1a1a] bg-gray-600"
-              />
-            ))}
-          </div>
-          <span className="text-white/60 text-xs font-bold">8.2k Readers</span>
-        </div>
-      </div>
-    ),
-  },
-  {
-    id: 2,
-    image: '/asstes/img3.png',
-    badgeIcon: <Users className="w-4 h-4" />,
-    badgeText: 'Community Knowledge',
-    title: 'Discover Wisdom Shared By Thousands',
-    description:
-      'Join a global community of lifelong learners. Explore real stories that inspire career growth.',
-    btnPrimary: 'Browse Lessons',
-    btnSecondary: 'Join Community',
-    themeColor: '#4f46e5',
-    // --- Right Section Data ---
-    rightCard: (
-      <div className="relative w-full max-w-[380px] space-y-4">
-        <div className="bg-white/10 backdrop-blur-xl border border-white/20 p-6 rounded-2xl flex items-center gap-4 translate-x-10">
-          <div className="w-10 h-10 rounded-full bg-blue-400 overflow-hidden border-2 border-white/20">
-            <img src="https://i.pravatar.cc/100?u=1" alt="user" />
-          </div>
-          <div className="flex-1">
-            <div className="h-2 w-24 bg-white/40 rounded-full mb-2"></div>
-            <div className="h-1.5 w-16 bg-white/20 rounded-full"></div>
-          </div>
-          <TrendingUp className="text-green-400" size={20} />
-        </div>
-        <div className="bg-white/80 backdrop-blur-2xl p-4 rounded-xl flex items-center gap-3 w-fit shadow-2xl">
-          <TrendingUp className="text-indigo-600" size={18} />
-          <span className="text-indigo-950 font-bold text-xs">
-            Trending Wisdom
-          </span>
-        </div>
-      </div>
-    ),
-  },
-  {
-    id: 3,
-    image: '/asstes/img1.png',
-    badgeIcon: <Crown className="w-4 h-4" />,
-    badgeText: 'Lifetime Access',
-    title: 'Unlock Premium Knowledge Forever',
-    description:
-      'Get exclusive access to verified wisdom from world-class experts. Unlimited publishing.',
-    btnPrimary: 'Upgrade Premium',
-    btnSecondary: 'See Pricing',
-    themeColor: '#d97706',
-    // --- Right Section Data ---
-    rightCard: (
-      <div className="relative w-full max-w-[400px]">
-        {/* Premium Card UI */}
-        <div className="bg-gradient-to-br from-orange-500 to-amber-700 rounded-3xl p-8 shadow-2xl border border-white/20 transform -rotate-3 hover:rotate-0 transition-transform duration-500">
-          <div className="flex justify-between items-start mb-12">
-            <div className="w-12 h-10 bg-white/20 rounded-lg backdrop-blur-md border border-white/10"></div>
-            <Crown className="text-white/60" />
-          </div>
-          <div className="text-white text-2xl font-mono tracking-[0.2em] mb-8">
-            •••• •••• 8842
-          </div>
-          <div className="flex justify-between items-end">
-            <div>
-              <p className="text-white/40 text-[10px] uppercase font-bold">
-                Member Name
-              </p>
-              <p className="text-white font-bold">PREMIUM MEMBER</p>
-            </div>
-            <div className="text-right">
-              <p className="text-white/40 text-[10px] uppercase font-bold">
-                Valid Thru
-              </p>
-              <p className="text-white font-bold">FOREVER</p>
-            </div>
-          </div>
-        </div>
-        {/* Floating stat card */}
-        <div className="absolute -bottom-10 -right-6 bg-white/10 backdrop-blur-2xl border border-white/20 p-6 rounded-2xl shadow-xl w-40">
-          <p className="text-white/40 text-[10px] font-bold uppercase mb-1">
-            Reach
-          </p>
-          <p className="text-white text-xl font-black">+142%</p>
-        </div>
-      </div>
-    ),
-  },
-];
-
 const BannerSection = () => {
   const [mounted, setMounted] = useState(false);
+  const { data: session } = authClient.useSession();
+  const isPremium =
+    session?.user?.role === 'premium' || session?.user?.plan === 'premium'; // Adjust based on your schema
+
   useEffect(() => setMounted(true), []);
+
+  const sliderData = [
+    {
+      id: 1,
+      image: '/asstes/img2.png',
+      badgeIcon: <Sparkles className="w-4 h-4" />,
+      badgeText: 'Preserve Your Wisdom',
+      title: 'Every Experience Becomes A Life Lesson',
+      description:
+        'Document your breakthroughs, learn from collective experiences, and build a permanent digital archive.',
+      btnPrimary: 'Start Writing',
+      pathPrimary: '/dashboard/user/add-lesson',
+      btnSecondary: 'Explore Lessons',
+      pathSecondary: '/public-lessons',
+      themeColor: '#6366f1',
+      rightCard: (
+        <div className="relative w-full max-w-[350px] aspect-[4/3] bg-white/10 backdrop-blur-2xl rounded-3xl border border-white/20 p-8 shadow-2xl">
+          <div className="flex items-center gap-4 mb-6">
+            <div className="w-12 h-12 bg-indigo-500 rounded-xl flex items-center justify-center text-white shadow-lg shadow-indigo-500/30">
+              <BrainCircuit size={24} />
+            </div>
+            <div>
+              <h4 className="text-white font-bold">Growth Mindset</h4>
+              <p className="text-white/40 text-[10px] uppercase font-black">
+                Core Lesson
+              </p>
+            </div>
+          </div>
+          <div className="space-y-3 opacity-30">
+            <div className="h-2 w-full bg-white rounded-full"></div>
+            <div className="h-2 w-3/4 bg-white rounded-full"></div>
+            <div className="h-2 w-1/2 bg-white rounded-full"></div>
+          </div>
+          <div className="mt-10 flex items-center justify-between border-t border-white/10 pt-4">
+            <div className="flex -space-x-2">
+              {[1, 2, 3].map(i => (
+                <div
+                  key={i}
+                  className="w-8 h-8 rounded-full border-2 border-[#1a1a1a] bg-gray-600"
+                />
+              ))}
+            </div>
+            <span className="text-white/60 text-xs font-bold">
+              8.2k Readers
+            </span>
+          </div>
+        </div>
+      ),
+    },
+    {
+      id: 2,
+      image: '/asstes/img3.png',
+      badgeIcon: <Users className="w-4 h-4" />,
+      badgeText: 'Community Knowledge',
+      title: 'Discover Wisdom Shared By Thousands',
+      description:
+        'Join a global community of lifelong learners. Explore real stories that inspire career growth.',
+      btnPrimary: 'Browse Lessons',
+      pathPrimary: '/public-lessons',
+      btnSecondary: 'Join Community',
+      pathSecondary: '/signup',
+      themeColor: '#4f46e5',
+      rightCard: (
+        <div className="relative w-full max-w-[380px] space-y-4">
+          <div className="bg-white/10 backdrop-blur-xl border border-white/20 p-6 rounded-2xl flex items-center gap-4 translate-x-10">
+            <div className="w-10 h-10 rounded-full bg-blue-400 overflow-hidden border-2 border-white/20">
+              <img src="https://i.pravatar.cc/100?u=1" alt="user" />
+            </div>
+            <div className="flex-1">
+              <div className="h-2 w-24 bg-white/40 rounded-full mb-2"></div>
+              <div className="h-1.5 w-16 bg-white/20 rounded-full"></div>
+            </div>
+            <TrendingUp className="text-green-400" size={20} />
+          </div>
+          <div className="bg-white/80 backdrop-blur-2xl p-4 rounded-xl flex items-center gap-3 w-fit shadow-2xl">
+            <TrendingUp className="text-indigo-600" size={18} />
+            <span className="text-indigo-950 font-bold text-xs">
+              Trending Wisdom
+            </span>
+          </div>
+        </div>
+      ),
+    },
+    {
+      id: 3,
+      image: '/asstes/img1.png',
+      badgeIcon: <Crown className="w-4 h-4" />,
+      badgeText: 'Lifetime Access',
+      title: 'Unlock Premium Knowledge Forever',
+      description:
+        'Get exclusive access to verified wisdom from world-class experts. Unlimited publishing.',
+      // Logic: If already premium, show "Go to Dashboard"
+      btnPrimary: isPremium ? 'View Dashboard' : 'Upgrade Premium',
+      pathPrimary: isPremium ? '/dashboard/user' : '/dashboard/user/upgrade',
+      btnSecondary: 'See Pricing',
+      pathSecondary: '/dashboard/user/upgrade',
+      themeColor: '#d97706',
+      rightCard: (
+        <div className="relative w-full max-w-[400px]">
+          <div className="bg-gradient-to-br from-orange-500 to-amber-700 rounded-3xl p-8 shadow-2xl border border-white/20 transform -rotate-3 hover:rotate-0 transition-transform duration-500">
+            <div className="flex justify-between items-start mb-12">
+              <div className="w-12 h-10 bg-white/20 rounded-lg backdrop-blur-md border border-white/10"></div>
+              <Crown className="text-white/60" />
+            </div>
+            <div className="text-white text-2xl font-mono tracking-[0.2em] mb-8">
+              •••• •••• 8842
+            </div>
+            <div className="flex justify-between items-end">
+              <div>
+                <p className="text-white/40 text-[10px] uppercase font-bold">
+                  Member Name
+                </p>
+                <p className="text-white font-bold">
+                  {session?.user?.name || 'PREMIUM MEMBER'}
+                </p>
+              </div>
+              <div className="text-right">
+                <p className="text-white/40 text-[10px] uppercase font-bold">
+                  Valid Thru
+                </p>
+                <p className="text-white font-bold">FOREVER</p>
+              </div>
+            </div>
+          </div>
+          <div className="absolute -bottom-10 -right-6 bg-white/10 backdrop-blur-2xl border border-white/20 p-6 rounded-2xl shadow-xl w-40">
+            <p className="text-white/40 text-[10px] font-bold uppercase mb-1">
+              Reach
+            </p>
+            <p className="text-white text-xl font-black">+142%</p>
+          </div>
+        </div>
+      ),
+    },
+  ];
+
   if (!mounted) return null;
 
   return (
@@ -178,7 +190,6 @@ const BannerSection = () => {
 
               <div className="container mx-auto px-6 md:px-16 relative z-10">
                 <div className="grid lg:grid-cols-2 gap-12 items-center">
-                  {/* --- Left Content Section --- */}
                   <div className="max-w-2xl">
                     <motion.div
                       initial={{ opacity: 0, x: -20 }}
@@ -217,21 +228,23 @@ const BannerSection = () => {
                       transition={{ delay: 0.6 }}
                       className="flex flex-wrap gap-4"
                     >
-                      <Link href="/public-lessons">
+                      <Link href={slide.pathPrimary}>
                         <button
-                          className="px-10 py-4 rounded-2xl font-black uppercase text-xs tracking-widest text-white shadow-2xl"
+                          className="px-10 py-4 rounded-2xl font-black uppercase text-xs tracking-widest text-white shadow-2xl transition-transform active:scale-95"
                           style={{ backgroundColor: slide.themeColor }}
                         >
                           {slide.btnPrimary}
                         </button>
                       </Link>
-                      <button className="px-10 py-4 rounded-2xl font-black uppercase text-xs tracking-widest text-white bg-white/10 backdrop-blur-xl border border-white/20">
-                        {slide.btnSecondary}
-                      </button>
+
+                      <Link href={slide.pathSecondary}>
+                        <button className="px-10 py-4 rounded-2xl font-black uppercase text-xs tracking-widest text-white bg-white/10 backdrop-blur-xl border border-white/20 transition-all hover:bg-white/20 active:scale-95">
+                          {slide.btnSecondary}
+                        </button>
+                      </Link>
                     </motion.div>
                   </div>
 
-                  {/* --- Right Floating UI Section (ADD NEW) --- */}
                   <motion.div
                     initial={{ opacity: 0, x: 50, scale: 0.8 }}
                     whileInView={{ opacity: 1, x: 0, scale: 1 }}
