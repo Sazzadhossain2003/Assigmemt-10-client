@@ -24,8 +24,10 @@ import 'swiper/css/effect-fade';
 const BannerSection = () => {
   const [mounted, setMounted] = useState(false);
   const { data: session } = authClient.useSession();
+
+  // ইউজার প্রিমিয়াম কিনা তা চেক করার লজিক
   const isPremium =
-    session?.user?.role === 'premium' || session?.user?.plan === 'premium'; // Adjust based on your schema
+    session?.user?.role === 'premium' || session?.user?.plan === 'premium';
 
   useEffect(() => setMounted(true), []);
 
@@ -39,12 +41,13 @@ const BannerSection = () => {
       description:
         'Document your breakthroughs, learn from collective experiences, and build a permanent digital archive.',
       btnPrimary: 'Start Writing',
-      pathPrimary: '/dashboard/user/add-lesson',
+      pathPrimary: '/dashboard/user/add-lesson', // Start writing এ ক্লিক করলে এখানে যাবে
       btnSecondary: 'Explore Lessons',
-      pathSecondary: '/public-lessons',
+      pathSecondary: '/public-lessons', // Explore এ ক্লিক করলে এখানে যাবে
       themeColor: '#6366f1',
       rightCard: (
         <div className="relative w-full max-w-[350px] aspect-[4/3] bg-white/10 backdrop-blur-2xl rounded-3xl border border-white/20 p-8 shadow-2xl">
+          {/* Card Content... */}
           <div className="flex items-center gap-4 mb-6">
             <div className="w-12 h-12 bg-indigo-500 rounded-xl flex items-center justify-center text-white shadow-lg shadow-indigo-500/30">
               <BrainCircuit size={24} />
@@ -61,19 +64,6 @@ const BannerSection = () => {
             <div className="h-2 w-3/4 bg-white rounded-full"></div>
             <div className="h-2 w-1/2 bg-white rounded-full"></div>
           </div>
-          <div className="mt-10 flex items-center justify-between border-t border-white/10 pt-4">
-            <div className="flex -space-x-2">
-              {[1, 2, 3].map(i => (
-                <div
-                  key={i}
-                  className="w-8 h-8 rounded-full border-2 border-[#1a1a1a] bg-gray-600"
-                />
-              ))}
-            </div>
-            <span className="text-white/60 text-xs font-bold">
-              8.2k Readers
-            </span>
-          </div>
         </div>
       ),
     },
@@ -86,12 +76,13 @@ const BannerSection = () => {
       description:
         'Join a global community of lifelong learners. Explore real stories that inspire career growth.',
       btnPrimary: 'Browse Lessons',
-      pathPrimary: '/public-lessons',
+      pathPrimary: '/public-lessons', // Browse এ ক্লিক করলে এখানে যাবে
       btnSecondary: 'Join Community',
       pathSecondary: '/signup',
       themeColor: '#4f46e5',
       rightCard: (
         <div className="relative w-full max-w-[380px] space-y-4">
+          {/* Card Content... */}
           <div className="bg-white/10 backdrop-blur-xl border border-white/20 p-6 rounded-2xl flex items-center gap-4 translate-x-10">
             <div className="w-10 h-10 rounded-full bg-blue-400 overflow-hidden border-2 border-white/20">
               <img src="https://i.pravatar.cc/100?u=1" alt="user" />
@@ -100,13 +91,6 @@ const BannerSection = () => {
               <div className="h-2 w-24 bg-white/40 rounded-full mb-2"></div>
               <div className="h-1.5 w-16 bg-white/20 rounded-full"></div>
             </div>
-            <TrendingUp className="text-green-400" size={20} />
-          </div>
-          <div className="bg-white/80 backdrop-blur-2xl p-4 rounded-xl flex items-center gap-3 w-fit shadow-2xl">
-            <TrendingUp className="text-indigo-600" size={18} />
-            <span className="text-indigo-950 font-bold text-xs">
-              Trending Wisdom
-            </span>
           </div>
         </div>
       ),
@@ -119,11 +103,14 @@ const BannerSection = () => {
       title: 'Unlock Premium Knowledge Forever',
       description:
         'Get exclusive access to verified wisdom from world-class experts. Unlimited publishing.',
-      // Logic: If already premium, show "Go to Dashboard"
+
+      // লজিক: ইউজার প্রিমিয়াম হলে ড্যাশবোর্ডে পাঠাবে, নাহলে আপগ্রেড পেজে
       btnPrimary: isPremium ? 'View Dashboard' : 'Upgrade Premium',
-      pathPrimary: isPremium ? '/dashboard/user' : '/pricing',
+      pathPrimary: isPremium ? '/dashboard/user' : '/dashboard/user/upgrade',
+
       btnSecondary: 'See Pricing',
-      pathSecondary: '/dashboard/user/upgrade',
+      pathSecondary: '/dashboard/user/upgrade', // এখানে রুট ঠিক করা হয়েছে
+
       themeColor: '#d97706',
       rightCard: (
         <div className="relative w-full max-w-[400px]">
@@ -144,19 +131,7 @@ const BannerSection = () => {
                   {session?.user?.name || 'PREMIUM MEMBER'}
                 </p>
               </div>
-              <div className="text-right">
-                <p className="text-white/40 text-[10px] uppercase font-bold">
-                  Valid Thru
-                </p>
-                <p className="text-white font-bold">FOREVER</p>
-              </div>
             </div>
-          </div>
-          <div className="absolute -bottom-10 -right-6 bg-white/10 backdrop-blur-2xl border border-white/20 p-6 rounded-2xl shadow-xl w-40">
-            <p className="text-white/40 text-[10px] font-bold uppercase mb-1">
-              Reach
-            </p>
-            <p className="text-white text-xl font-black">+142%</p>
           </div>
         </div>
       ),
@@ -259,7 +234,7 @@ const BannerSection = () => {
           </SwiperSlide>
         ))}
 
-        {/* Controls */}
+        {/* Navigation Buttons */}
         <button className="prev-btn absolute left-8 top-1/2 -translate-y-1/2 z-30 w-12 h-12 rounded-full border border-white/10 bg-white/5 backdrop-blur-md text-white flex items-center justify-center hover:bg-white hover:text-black transition-all hidden md:flex">
           <ChevronLeft size={24} />
         </button>
@@ -267,28 +242,6 @@ const BannerSection = () => {
           <ChevronRight size={24} />
         </button>
       </Swiper>
-
-      <style jsx global>{`
-        .swiper-pagination {
-          bottom: 40px !important;
-          left: 50% !important;
-          transform: translateX(-50%) !important;
-          display: flex;
-          gap: 10px;
-        }
-        .swiper-pagination-bullet {
-          width: 40px !important;
-          height: 4px !important;
-          border-radius: 2px !important;
-          background: rgba(255, 255, 255, 0.2) !important;
-          opacity: 1 !important;
-          transition: all 0.4s ease;
-        }
-        .swiper-pagination-bullet-active {
-          background: white !important;
-          width: 60px !important;
-        }
-      `}</style>
     </section>
   );
 };
