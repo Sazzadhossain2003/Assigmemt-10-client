@@ -11,6 +11,9 @@ import {
   Crown,
   TrendingUp,
   BrainCircuit,
+  ShieldCheck,
+  Activity,
+  BarChart3,
 } from 'lucide-react';
 import Link from 'next/link';
 import { authClient } from '@/lib/auth-client';
@@ -25,13 +28,61 @@ const BannerSection = () => {
   const [mounted, setMounted] = useState(false);
   const { data: session } = authClient.useSession();
 
-  // ইউজার প্রিমিয়াম কিনা তা চেক করার লজিক
-  const isPremium =
-    session?.user?.role === 'premium' || session?.user?.plan === 'premium';
+  const isPremium = session?.user?.role === 'premium';
+  const isAdmin = session?.user?.role === 'admin';
 
   useEffect(() => setMounted(true), []);
 
-  const sliderData = [
+  // --- অ্যাডমিনদের জন্য স্লাইডার ডাটা ---
+  const adminSliderData = [
+    {
+      id: 1,
+      image: '/asstes/img2.png',
+      badgeIcon: <ShieldCheck className="w-4 h-4" />,
+      badgeText: 'Administrative Access',
+      title: 'Command Center & System Oversight',
+      description:
+        'Manage users, monitor platform growth, and ensure the integrity of the collective wisdom database.',
+      btnPrimary: 'Go to Admin Panel',
+      pathPrimary: '/dashboard/admin',
+      btnSecondary: 'Manage Users',
+      pathSecondary: '/dashboard/admin/manage-users',
+      themeColor: '#6366f1',
+      rightCard: (
+        <div className="bg-white/10 backdrop-blur-2xl rounded-3xl p-8 border border-white/20 shadow-2xl">
+          <Activity className="text-indigo-400 mb-4" size={40} />
+          <h4 className="text-white font-bold">System Health</h4>
+          <p className="text-emerald-400 text-xs font-black mt-2">
+            ● ALL SYSTEMS OPERATIONAL
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 2,
+      image: '/asstes/img3.png',
+      badgeIcon: <BarChart3 className="w-4 h-4" />,
+      badgeText: 'Analytics Hub',
+      title: 'Platform Intelligence & Metrics',
+      description:
+        'Analyze user engagement and content performance. Keep the ecosystem thriving with data-driven insights.',
+      btnPrimary: 'View Analytics',
+      pathPrimary: '/dashboard/admin',
+      btnSecondary: 'Review Flags',
+      pathSecondary: '/dashboard/admin/reported-lessons',
+      themeColor: '#4f46e5',
+      rightCard: (
+        <div className="bg-white/10 backdrop-blur-2xl rounded-3xl p-8 border border-white/20 shadow-2xl">
+          <BarChart3 className="text-blue-400 mb-4" size={40} />
+          <h4 className="text-white font-bold">Traffic Growth</h4>
+          <p className="text-white/60 text-xs mt-2">+24% Increase this week</p>
+        </div>
+      ),
+    },
+  ];
+
+  // --- সাধারণ ইউজারদের জন্য স্লাইডার ডাটা ---
+  const userSliderData = [
     {
       id: 1,
       image: '/asstes/img2.png',
@@ -41,13 +92,12 @@ const BannerSection = () => {
       description:
         'Document your breakthroughs, learn from collective experiences, and build a permanent digital archive.',
       btnPrimary: 'Start Writing',
-      pathPrimary: '/dashboard/user/add-lesson', // Start writing এ ক্লিক করলে এখানে যাবে
+      pathPrimary: '/dashboard/user/add-lesson',
       btnSecondary: 'Explore Lessons',
-      pathSecondary: '/public-lessons', // Explore এ ক্লিক করলে এখানে যাবে
+      pathSecondary: '/public-lessons',
       themeColor: '#6366f1',
       rightCard: (
         <div className="relative w-full max-w-[350px] aspect-[4/3] bg-white/10 backdrop-blur-2xl rounded-3xl border border-white/20 p-8 shadow-2xl">
-          {/* Card Content... */}
           <div className="flex items-center gap-4 mb-6">
             <div className="w-12 h-12 bg-indigo-500 rounded-xl flex items-center justify-center text-white shadow-lg shadow-indigo-500/30">
               <BrainCircuit size={24} />
@@ -76,13 +126,12 @@ const BannerSection = () => {
       description:
         'Join a global community of lifelong learners. Explore real stories that inspire career growth.',
       btnPrimary: 'Browse Lessons',
-      pathPrimary: '/public-lessons', // Browse এ ক্লিক করলে এখানে যাবে
+      pathPrimary: '/public-lessons',
       btnSecondary: 'Join Community',
       pathSecondary: '/signup',
       themeColor: '#4f46e5',
       rightCard: (
         <div className="relative w-full max-w-[380px] space-y-4">
-          {/* Card Content... */}
           <div className="bg-white/10 backdrop-blur-xl border border-white/20 p-6 rounded-2xl flex items-center gap-4 translate-x-10">
             <div className="w-10 h-10 rounded-full bg-blue-400 overflow-hidden border-2 border-white/20">
               <img src="https://i.pravatar.cc/100?u=1" alt="user" />
@@ -103,14 +152,10 @@ const BannerSection = () => {
       title: 'Unlock Premium Knowledge Forever',
       description:
         'Get exclusive access to verified wisdom from world-class experts. Unlimited publishing.',
-
-      // লজিক: ইউজার প্রিমিয়াম হলে ড্যাশবোর্ডে পাঠাবে, নাহলে আপগ্রেড পেজে
       btnPrimary: isPremium ? 'View Dashboard' : 'Upgrade Premium',
       pathPrimary: isPremium ? '/dashboard/user' : '/dashboard/user/upgrade',
-
       btnSecondary: 'See Pricing',
-      pathSecondary: '/dashboard/user/upgrade', // এখানে রুট ঠিক করা হয়েছে
-
+      pathSecondary: '/dashboard/user/upgrade',
       themeColor: '#d97706',
       rightCard: (
         <div className="relative w-full max-w-[400px]">
@@ -138,6 +183,9 @@ const BannerSection = () => {
     },
   ];
 
+  // রোল অনুযায়ী ডাটা সেট করা
+  const activeSliderData = isAdmin ? adminSliderData : userSliderData;
+
   if (!mounted) return null;
 
   return (
@@ -155,7 +203,7 @@ const BannerSection = () => {
         loop={true}
         className="w-full h-full"
       >
-        {sliderData.map(slide => (
+        {activeSliderData.map(slide => (
           <SwiperSlide key={slide.id}>
             <div
               className="relative w-full h-full bg-cover bg-center flex items-center"
@@ -234,7 +282,7 @@ const BannerSection = () => {
           </SwiperSlide>
         ))}
 
-        {/* Navigation Buttons */}
+        {/* Controls */}
         <button className="prev-btn absolute left-8 top-1/2 -translate-y-1/2 z-30 w-12 h-12 rounded-full border border-white/10 bg-white/5 backdrop-blur-md text-white flex items-center justify-center hover:bg-white hover:text-black transition-all hidden md:flex">
           <ChevronLeft size={24} />
         </button>
