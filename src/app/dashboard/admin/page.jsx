@@ -9,8 +9,9 @@ import {
   FiActivity,
   FiAward,
   FiStar,
+  FiArrowUpRight,
+  FiChevronRight,
 } from 'react-icons/fi';
-import { FaHeart } from 'react-icons/fa';
 import Link from 'next/link';
 import { authClient } from '@/lib/auth-client';
 import { useRouter } from 'next/navigation';
@@ -31,18 +32,7 @@ const AdminDashboardHome = () => {
   });
 
   const { data: session, isPending: authLoading } = authClient.useSession();
-  console.log('session', session);
   const router = useRouter();
-
-  const getInitials = name => {
-    if (!name) return '??';
-    return name
-      .split(' ')
-      .map(n => n[0])
-      .join('')
-      .toUpperCase()
-      .slice(0, 2);
-  };
 
   useEffect(() => {
     if (!authLoading && (!session || session.user.role !== 'admin')) {
@@ -128,14 +118,14 @@ const AdminDashboardHome = () => {
 
   if (authLoading || dashboardData.loading)
     return (
-      <div className="flex flex-col justify-center items-center h-screen bg-[#0a0a0a] gap-4">
+      <div className="flex flex-col justify-center items-center h-screen bg-white gap-4">
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ repeat: Infinity, duration: 1 }}
-          className="w-10 h-10 border-2 border-t-transparent border-[#d4af37] rounded-full"
+          className="w-10 h-10 border-4 border-slate-100 border-t-indigo-600 rounded-full"
         />
-        <p className="text-[#d4af37] font-black text-[10px] tracking-widest uppercase">
-          Initializing_Admin_Core...
+        <p className="text-slate-500 font-medium text-sm animate-pulse">
+          Loading Analytics...
         </p>
       </div>
     );
@@ -145,53 +135,74 @@ const AdminDashboardHome = () => {
       label: 'Total Users',
       value: dashboardData.users.length,
       icon: <FiUsers />,
-      color: 'text-white',
+      bgColor: 'bg-blue-50',
+      iconColor: 'text-blue-600',
     },
     {
       label: 'Public Wisdom',
       value: dashboardData.stats.publicCount || 0,
       icon: <FiBookOpen />,
-      color: 'text-[#d4af37]',
+      bgColor: 'bg-indigo-50',
+      iconColor: 'text-indigo-600',
     },
     {
       label: 'Reported Flags',
       value: dashboardData.reports.length,
       icon: <FiAlertTriangle />,
-      color: 'text-red-500',
+      bgColor: 'bg-red-50',
+      iconColor: 'text-red-600',
     },
     {
       label: "Today's Entry",
       value: dashboardData.todayLessons,
       icon: <FiCalendar />,
-      color: 'text-white',
+      bgColor: 'bg-emerald-50',
+      iconColor: 'text-emerald-600',
     },
   ];
 
   return (
-    <div className="p-4 sm:p-6 lg:p-10 bg-[#0a0a0a] min-h-screen text-gray-400">
+    <div className="p-4 sm:p-6 lg:p-10 bg-[#f8fafc] min-h-screen text-slate-600">
       {/* Header */}
-      <div className="mb-10 text-center md:text-left">
-        <h1 className="text-3xl md:text-5xl font-black text-white uppercase tracking-tighter">
-          Master <span className="text-[#d4af37]">Panel</span>
-        </h1>
-        <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-gray-600 mt-2 italic">
-          Security & Intelligence Interface
-        </p>
+      <div className="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl md:text-3xl font-bold text-slate-900 tracking-tight">
+            Admin <span className="text-indigo-600">Overview</span>
+          </h1>
+          <p className="text-sm font-medium text-slate-500 mt-1">
+            Welcome back, {session?.user?.name || 'Commander'}
+          </p>
+        </div>
+        <div className="flex gap-2">
+          <span className="px-4 py-2 bg-white border border-slate-200 rounded-lg text-xs font-semibold shadow-sm flex items-center gap-2">
+            <span className="w-2 h-2 bg-emerald-500 rounded-full animate-ping" />
+            System Live
+          </span>
+        </div>
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
         {stats.map((stat, i) => (
           <div
             key={i}
-            className="bg-[#111] p-6 rounded-2xl border border-white/5 group hover:border-[#d4af37]/30 transition-all"
+            className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow"
           >
-            <div className={`${stat.color} text-2xl mb-4`}>{stat.icon}</div>
-            <p className="text-[10px] font-black uppercase text-gray-500 tracking-widest">
+            <div className="flex justify-between items-start">
+              <div
+                className={`${stat.bgColor} ${stat.iconColor} p-3 rounded-xl text-xl`}
+              >
+                {stat.icon}
+              </div>
+              <span className="text-emerald-500 bg-emerald-50 text-[10px] font-bold px-2 py-1 rounded">
+                +12%
+              </span>
+            </div>
+            <p className="text-xs font-semibold uppercase text-slate-400 tracking-wider mt-4">
               {stat.label}
             </p>
-            <h2 className="text-3xl font-black text-white mt-1">
-              {stat.value}
+            <h2 className="text-3xl font-bold text-slate-900 mt-1">
+              {stat.value.toLocaleString()}
             </h2>
           </div>
         ))}
@@ -199,87 +210,107 @@ const AdminDashboardHome = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Growth Chart */}
-        <div className="lg:col-span-2 bg-[#111] p-6 rounded-3xl border border-white/5 overflow-hidden">
-          <h3 className="text-white font-bold flex items-center gap-2 uppercase tracking-widest text-sm mb-6">
-            <FiActivity className="text-[#d4af37]" /> Platform Growth Dynamics
-          </h3>
-          <AdminDashboardCharts data={dashboardData.chartData} />
+        <div className="lg:col-span-2 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+          <div className="flex items-center justify-between mb-8">
+            <h3 className="text-slate-800 font-bold flex items-center gap-2 text-base">
+              <FiActivity className="text-indigo-600" /> Platform Growth
+            </h3>
+            <select className="text-xs font-bold border-none bg-slate-50 rounded-lg focus:ring-0">
+              <option>Last 7 Days</option>
+              <option>Last 30 Days</option>
+            </select>
+          </div>
+          <div className="h-[300px] w-full">
+            <AdminDashboardCharts data={dashboardData.chartData} />
+          </div>
         </div>
 
         {/* Right Sidebar */}
         <div className="space-y-6">
           {/* Top Contributors */}
-          <div className="bg-[#111] p-6 rounded-3xl border border-white/5">
-            <h3 className="text-white font-bold text-sm uppercase tracking-widest flex items-center gap-2 mb-6">
-              <FiAward className="text-[#d4af37]" /> Elite Contributors
+          <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+            <h3 className="text-slate-800 font-bold text-sm flex items-center justify-between mb-6">
+              <span className="flex items-center gap-2">
+                <FiAward className="text-amber-500" /> Elite Contributors
+              </span>
+              <FiArrowUpRight className="text-slate-400" />
             </h3>
             <div className="space-y-5">
               {dashboardData.topContributors.map((user, i) => (
                 <div
                   key={i}
-                  className="flex items-center justify-between min-w-0"
+                  className="flex items-center justify-between group"
                 >
-                  <div className="flex items-center gap-3 truncate">
-                    <div className="w-9 h-9 rounded-full bg-gray-800 border-white/10 flex items-center justify-center shrink-0 overflow-hidden hover:border-amber-500 border-0 hover:border-2">
-                      {/* এখানে session?.user?.id এর বদলে user._id হবে */}
+                  <div className="flex items-center gap-3">
+                    <div className="relative w-10 h-10 shrink-0">
                       <Link href={`/author-profile/${user._id}`}>
                         {user?.image ? (
                           <Image
-                            alt="User Image"
-                            width={30}
-                            height={30}
+                            alt="User"
+                            fill
                             src={user?.image}
-                            className="w-full h-full rounded-full object-cover"
+                            className="rounded-full object-cover border-2 border-transparent group-hover:border-indigo-500 transition-all"
                           />
                         ) : (
-                          <span className="text-[10px] font-black text-gray-400">
-                            {user?.name.slice(0, 2)}
-                          </span>
+                          <div className="w-full h-full rounded-full bg-slate-100 flex items-center justify-center text-xs font-bold text-slate-500">
+                            {user?.name.slice(0, 2).toUpperCase()}
+                          </div>
                         )}
                       </Link>
                     </div>
                     <div className="truncate">
-                      {/* নামকেও ক্লিকেবল করার জন্য Link ব্যবহার করা ভালো */}
                       <Link href={`/author-profile/${user._id}`}>
-                        <p className="text-xs font-bold text-white truncate hover:text-[#d4af37] transition-colors">
+                        <p className="text-sm font-bold text-slate-800 truncate hover:text-indigo-600 transition-colors">
                           {user.name}
                         </p>
                       </Link>
-                      <p className="text-[9px] text-[#d4af37] font-black uppercase">
-                        {user.totalLessons} Lessons
+                      <p className="text-[11px] text-slate-500 font-medium">
+                        {user.totalLessons} Lessons published
                       </p>
                     </div>
                   </div>
-                  <FiStar className="text-[#d4af37] shrink-0" size={12} />
+                  <div className="flex items-center gap-1 text-amber-500">
+                    <FiStar size={12} fill="currentColor" />
+                  </div>
                 </div>
               ))}
             </div>
           </div>
 
           {/* Reported Flags  */}
-          <div className="bg-[#111] p-6 rounded-3xl border border-red-900/20">
-            <h3 className="text-red-500 font-bold text-[10px] uppercase tracking-widest mb-4 flex items-center gap-2">
-              <FiAlertTriangle /> Critical Flags
+          <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+            <h3 className="text-red-600 font-bold text-sm mb-4 flex items-center gap-2">
+              <FiAlertTriangle /> Urgent Moderation
             </h3>
             <div className="space-y-3">
-              {dashboardData.reports.slice(0, 3).map((r, i) => (
-                <div
-                  key={i}
-                  className="p-3 bg-black/40 rounded-xl text-[10px] border border-white/5"
-                >
-                  <p className="text-gray-300 font-bold truncate italic">
-                    {r.lessonTitle || 'System Flag'}
-                  </p>
-                  <p className="text-red-400 mt-1 uppercase font-black tracking-tighter">
-                    Reason: {r.reason}
-                  </p>
-                </div>
-              ))}
+              {dashboardData.reports.length > 0 ? (
+                dashboardData.reports.slice(0, 3).map((r, i) => (
+                  <div
+                    key={i}
+                    className="p-3 bg-slate-50 rounded-xl border border-slate-100 hover:border-red-100 transition-colors"
+                  >
+                    <p className="text-slate-800 font-bold text-xs truncate">
+                      {r.lessonTitle || 'System Flag'}
+                    </p>
+                    <div className="flex justify-between items-center mt-2">
+                      <span className="text-[10px] text-red-500 font-bold px-2 py-0.5 bg-red-50 rounded">
+                        {r.reason}
+                      </span>
+                      <FiChevronRight className="text-slate-400" />
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <p className="text-[11px] text-slate-400 text-center py-4">
+                  No pending reports
+                </p>
+              )}
+
               <Link
                 href="/dashboard/admin/reported-lessons"
-                className="block w-full text-center py-3 border border-white/10 rounded-xl text-[10px] font-black uppercase text-white hover:bg-white hover:text-black transition-all"
+                className="block w-full text-center py-3 mt-2 bg-slate-900 rounded-xl text-xs font-bold text-white hover:bg-indigo-600 transition-all shadow-lg shadow-slate-200"
               >
-                Moderate All Records
+                Review All Reports
               </Link>
             </div>
           </div>

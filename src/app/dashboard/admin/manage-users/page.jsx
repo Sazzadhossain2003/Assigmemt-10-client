@@ -2,7 +2,7 @@
 import { authClient } from '@/lib/auth-client';
 import { api } from '@/lib/reusableApi';
 import Image from 'next/image';
-import Link from 'next/link'; // নিশ্চিত করুন এটি ইমপোর্ট করা আছে
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
@@ -12,7 +12,9 @@ import {
   FaSearch,
   FaShieldAlt,
   FaCrown,
+  FaUserShield,
 } from 'react-icons/fa';
+import { FiMoreVertical, FiMail, FiLayers } from 'react-icons/fi';
 import ConfiremDeletModal from '../manage-lessons/ConfiremDeletModal';
 
 const ManageUsersByAdminPage = () => {
@@ -84,13 +86,13 @@ const ManageUsersByAdminPage = () => {
 
   if (loading)
     return (
-      <div className="flex justify-center items-center h-screen bg-[#0a0a0a]">
-        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#d4af37]"></div>
+      <div className="flex justify-center items-center h-screen bg-white">
+        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-600"></div>
       </div>
     );
 
   return (
-    <div className="p-4 md:p-8 lg:p-12 bg-[#0a0a0a] min-h-screen text-white font-sans">
+    <div className="p-4 md:p-8 lg:p-12 bg-[#f8fafc] min-h-screen text-slate-600 font-sans">
       <Toaster position="top-right" />
 
       <ConfiremDeletModal
@@ -107,19 +109,23 @@ const ManageUsersByAdminPage = () => {
       />
 
       <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12 border-b border-gray-800 pb-8">
+        {/* Header Section */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
           <div>
-            <h2 className="text-2xl md:text-3xl font-black text-[#d4af37] flex items-center gap-3 uppercase tracking-tighter">
-              <FaUsersCog className="text-white" /> User Management
+            <h2 className="text-2xl md:text-3xl font-bold text-slate-900 flex items-center gap-3">
+              <FaUsersCog className="text-indigo-600" /> User Directory
             </h2>
+            <p className="text-slate-500 text-sm mt-1">
+              Manage user roles, permissions and account status.
+            </p>
           </div>
 
           <div className="relative w-full md:w-96">
-            <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-600" />
+            <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
             <input
               type="text"
-              placeholder="SEARCH BY NAME..."
-              className="w-full bg-[#111] border border-gray-800 rounded-xl py-4 pl-12 pr-4 text-[11px] font-bold focus:border-[#d4af37] outline-none transition-all uppercase tracking-widest text-white"
+              placeholder="Search by name or email..."
+              className="w-full bg-white border border-slate-200 rounded-xl py-3 pl-12 pr-4 text-sm focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all shadow-sm"
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
             />
@@ -127,79 +133,90 @@ const ManageUsersByAdminPage = () => {
         </div>
 
         {/* Desktop Table View */}
-        <div className="hidden lg:block bg-[#111] border border-white/5 rounded-2xl overflow-hidden shadow-2xl">
+        <div className="hidden lg:block bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
           <table className="w-full text-left">
-            <thead className="bg-black/50 text-[10px] uppercase tracking-widest text-gray-500 border-b border-gray-800">
+            <thead className="bg-slate-50 text-[11px] uppercase tracking-wider text-slate-500 font-bold border-b border-slate-200">
               <tr>
-                <th className="px-8 py-5">Identity</th>
-                <th className="px-8 py-5">Email</th>
-                <th className="px-8 py-5">Authority</th>
-                <th className="px-8 py-5 text-center">Lessons</th>
-                <th className="px-8 py-5 text-right">Actions</th>
+                <th className="px-8 py-4">User Details</th>
+                <th className="px-8 py-4">Access Level</th>
+                <th className="px-8 py-4 text-center">Lessons</th>
+                <th className="px-8 py-4 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-900">
+            <tbody className="divide-y divide-slate-100">
               {filteredUsers.map(user => (
                 <tr
                   key={user._id}
-                  className="hover:bg-white/[0.02] transition-colors"
+                  className="hover:bg-slate-50/50 transition-colors group"
                 >
-                  <td className="px-8 py-6">
-                    {/* এখানে Link ব্যবহার করা হয়েছে */}
+                  <td className="px-8 py-5">
                     <Link
                       href={`/author-profile/${user._id}`}
-                      className="group flex items-center gap-4"
+                      className="flex items-center gap-4"
                     >
-                      <div className="w-10 h-10 rounded-full border border-gray-700 overflow-hidden shrink-0 group-hover:border-[#d4af37] transition-all">
+                      <div className="w-11 h-11 rounded-full border border-slate-200 overflow-hidden shrink-0 group-hover:border-indigo-500 transition-all bg-slate-100">
                         {user.image || user.photoURL ? (
                           <Image
-                            width={40}
-                            height={40}
+                            width={44}
+                            height={44}
                             src={user.image || user.photoURL}
                             className="w-full h-full object-cover"
                             alt="user"
                           />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center bg-black text-[#d4af37] font-black text-xs">
+                          <div className="w-full h-full flex items-center justify-center text-slate-500 font-bold text-xs uppercase">
                             {getInitials(user.name)}
                           </div>
                         )}
                       </div>
                       <div>
-                        <p className="text-sm font-bold text-gray-200 uppercase group-hover:text-[#d4af37] transition-all">
-                          {user.name}
+                        <div className="flex items-center gap-2">
+                          <p className="text-sm font-bold text-slate-800 group-hover:text-indigo-600 transition-all">
+                            {user.name}
+                          </p>
+                          {user.isPremium && (
+                            <span
+                              className="text-amber-500"
+                              title="Premium member"
+                            >
+                              <FaCrown size={12} />
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-xs text-slate-400 flex items-center gap-1 mt-0.5">
+                          <FiMail size={10} /> {user.email}
                         </p>
-                        {user.isPremium && (
-                          <span className="text-[8px] text-[#d4af37] font-black uppercase flex items-center gap-1">
-                            <FaCrown size={8} /> Premium
-                          </span>
-                        )}
                       </div>
                     </Link>
                   </td>
-                  <td className="px-8 py-6 text-xs text-gray-500 font-mono">
-                    {user.email}
-                  </td>
-                  <td className="px-8 py-6">
+                  <td className="px-8 py-5">
                     <span
-                      className={`text-[9px] font-black px-3 py-1 rounded-full border ${user.role === 'admin' ? 'border-[#d4af37] text-[#d4af37]' : 'border-gray-800 text-gray-500'}`}
+                      className={`text-[10px] font-bold px-3 py-1 rounded-lg border flex w-fit items-center gap-1.5 ${
+                        user.role === 'admin'
+                          ? 'bg-indigo-50 border-indigo-100 text-indigo-600'
+                          : 'bg-slate-50 border-slate-200 text-slate-500'
+                      }`}
                     >
-                      {user.role}
+                      {user.role === 'admin' && <FaUserShield size={10} />}
+                      {user.role?.toUpperCase()}
                     </span>
                   </td>
-                  <td className="px-8 py-6 text-center text-[#d4af37] font-black font-mono text-lg">
-                    {user.totalLessons || 0}
+                  <td className="px-8 py-5 text-center">
+                    <div className="inline-flex items-center gap-1 text-slate-700 font-bold px-3 py-1 bg-slate-100 rounded-full text-xs">
+                      <FiLayers className="text-slate-400" size={12} />
+                      {user.totalLessons || 0}
+                    </div>
                   </td>
-                  <td className="px-8 py-6 text-right">
-                    <div className="flex items-center justify-end gap-3">
+                  <td className="px-8 py-5 text-right">
+                    <div className="flex items-center justify-end gap-2">
                       {user.role !== 'admin' && (
                         <button
                           onClick={() =>
                             setModal({ isOpen: true, type: 'promote', user })
                           }
-                          className="text-[9px] font-black uppercase border hover:cursor-pointer border-gray-700 px-4 py-2 hover:bg-[#d4af37] hover:text-black transition-all rounded-md"
+                          className="text-[10px] font-bold uppercase bg-indigo-600 text-white px-4 py-2 hover:bg-indigo-700 transition-all rounded-lg shadow-sm shadow-indigo-100"
                         >
-                          Set Admin
+                          Make Admin
                         </button>
                       )}
                       <button
@@ -207,9 +224,9 @@ const ManageUsersByAdminPage = () => {
                         onClick={() =>
                           setModal({ isOpen: true, type: 'delete', user })
                         }
-                        className="p-2 text-gray-700 hover:text-red-500 disabled:opacity-20 cursor-pointer"
+                        className="p-2.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all disabled:opacity-20"
                       >
-                        <FaTrashAlt size={16} />
+                        <FaTrashAlt size={14} />
                       </button>
                     </div>
                   </td>
@@ -224,49 +241,54 @@ const ManageUsersByAdminPage = () => {
           {filteredUsers.map(user => (
             <div
               key={user._id}
-              className="bg-[#111] p-6 rounded-2xl border border-white/5 shadow-xl"
+              className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm"
             >
-              {/* মোবাইল ভিউতে এখানে Link ব্যবহার করা হয়েছে */}
-              <Link
-                href={`/author-profile/${user._id}`}
-                className="group flex items-center gap-4 mb-6"
-              >
-                <div className="w-12 h-12 rounded-full border border-gray-700 overflow-hidden flex items-center justify-center bg-black group-hover:border-[#d4af37] transition-all">
-                  {user.image ? (
-                    <Image
-                      width={48}
-                      height={48}
-                      src={user.image}
-                      className="rounded-full"
-                      alt="img"
-                    />
-                  ) : (
-                    <span className="text-xs font-black text-[#d4af37]">
-                      {getInitials(user.name)}
-                    </span>
-                  )}
+              <div className="flex justify-between items-start mb-4">
+                <Link
+                  href={`/author-profile/${user._id}`}
+                  className="flex items-center gap-3"
+                >
+                  <div className="w-12 h-12 rounded-full border border-slate-100 overflow-hidden bg-slate-50 flex items-center justify-center">
+                    {user.image ? (
+                      <Image
+                        width={48}
+                        height={48}
+                        src={user.image}
+                        className="rounded-full"
+                        alt="img"
+                      />
+                    ) : (
+                      <span className="text-xs font-bold text-slate-400">
+                        {getInitials(user.name)}
+                      </span>
+                    )}
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-bold text-slate-800">
+                      {user.name}
+                    </h4>
+                    <p className="text-[11px] text-slate-500">{user.email}</p>
+                  </div>
+                </Link>
+                <div className="bg-slate-100 px-2 py-1 rounded text-[10px] font-bold text-slate-600">
+                  {user.role}
                 </div>
-                <div>
-                  <h4 className="text-sm font-black text-white uppercase group-hover:text-[#d4af37] transition-all">
-                    {user.name}
-                  </h4>
-                  <p className="text-[10px] text-gray-600 font-mono">
-                    {user.email}
-                  </p>
-                </div>
-              </Link>
+              </div>
 
-              <div className="flex justify-between items-center pt-4 border-t border-gray-800">
-                <span className="text-xl font-mono font-black text-[#d4af37]">
-                  {user.totalLessons || 0}
-                </span>
+              <div className="flex justify-between items-center pt-4 border-t border-slate-50">
+                <div className="text-xs font-bold text-slate-500">
+                  <span className="text-indigo-600 text-base">
+                    {user.totalLessons || 0}
+                  </span>{' '}
+                  Lessons
+                </div>
                 <div className="flex gap-2">
                   {user.role !== 'admin' && (
                     <button
                       onClick={() =>
                         setModal({ isOpen: true, type: 'promote', user })
                       }
-                      className="bg-white/5 p-2 rounded-lg text-[#d4af37] hover:bg-amber-500 hover:text-black transition-all"
+                      className="bg-indigo-50 p-2.5 rounded-xl text-indigo-600 hover:bg-indigo-600 hover:text-white transition-all"
                     >
                       <FaShieldAlt size={14} />
                     </button>
@@ -276,9 +298,9 @@ const ManageUsersByAdminPage = () => {
                     onClick={() =>
                       setModal({ isOpen: true, type: 'delete', user })
                     }
-                    className="p-2 text-gray-700 hover:text-red-500 disabled:opacity-20"
+                    className="p-2.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-xl"
                   >
-                    <FaTrashAlt size={16} />
+                    <FaTrashAlt size={14} />
                   </button>
                 </div>
               </div>

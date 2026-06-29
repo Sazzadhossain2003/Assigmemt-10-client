@@ -3,70 +3,95 @@
 import React from 'react';
 import Link from 'next/link';
 import { HiHome } from 'react-icons/hi';
-import Image from 'next/image';
+import { FiSearch, FiCompass } from 'react-icons/fi';
+import { motion } from 'framer-motion';
 
 const NotFoundPage = () => {
   return (
-    <div className="relative min-h-screen bg-[#1a120b] flex items-center justify-center overflow-hidden p-6">
-      {/* Background বড় করে লেখা 404 */}
+    <div className="relative min-h-screen bg-[#f8fafc] flex items-center justify-center overflow-hidden p-6 font-sans">
+      {/* Background Large 404 Text - Subtle Light Version */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none">
-        <h1 className="text-[15rem] md:text-[25rem] lg:text-[30rem] font-bold text-white/[0.03] leading-none">
+        <h1 className="text-[15rem] md:text-[25rem] lg:text-[32rem] font-black text-indigo-50/50 leading-none tracking-tighter">
           404
         </h1>
       </div>
 
       {/* Main Content */}
       <div className="relative z-10 flex flex-col items-center text-center max-w-xl">
-        {/* Image Container */}
-        <div className="mb-8 relative group">
-          {/* ইমেজের পেছনে হালকা গ্লো ইফেক্ট */}
-          <div className="absolute -inset-4 bg-amber-500/20 rounded-full blur-3xl opacity-30 group-hover:opacity-50 transition duration-1000"></div>
+        {/* Animated Visual Replacement for Image */}
+        <div className="mb-12 relative group">
+          <motion.div
+            initial={{ rotate: 0 }}
+            animate={{ rotate: 360 }}
+            transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
+            className="absolute -inset-10 bg-indigo-100/50 rounded-full blur-3xl opacity-60"
+          />
 
-          <div className="relative w-64 h-64 md:w-80 md:h-80 overflow-hidden rounded-2xl border border-white/10 shadow-2xl">
-            <Image
-              // এখানে width এবং height বাড়িয়ে ৫০০ করে দিন যাতে ইমেজ ক্লিয়ার থাকে
-              width={500}
-              height={500}
-              src="/asstes/AB6AXuCSHXbbEMqiiz-cT32wS0nv2i15oPiZtktCPN_MqtKLKUxLTQ2ttzjTtmwNAVeFWlSwsDDDkUnOApBUE-SGkQFPK8pYFphL0R2a94wOUh2fUN6KyXe7F4talgLe5Y7YWw2AIg2KAMEI6dBhT5SeBix7YELe8az8HZgRPjH66yCSdzJrQlpC95kLhpA4T4r1xcPPdA4-9Np0kjZksCL.png"
-              alt="Wisdom Lost"
-              priority // এই ইমেজটি আগে লোড হওয়ার জন্য
-              className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700"
-            />
+          <div className="relative w-48 h-48 md:w-56 md:h-56 bg-white rounded-[2.5rem] border border-slate-200 shadow-2xl flex items-center justify-center transform rotate-3 hover:rotate-0 transition-transform duration-500">
+            <div className="flex flex-col items-center">
+              <motion.div
+                animate={{
+                  y: [0, -15, 0],
+                  rotate: [0, 5, 0],
+                }}
+                transition={{
+                  duration: 4,
+                  repeat: Infinity,
+                  ease: 'easeInOut',
+                }}
+              >
+                <FiCompass size={80} className="text-indigo-600 mb-2" />
+              </motion.div>
+              <div className="w-12 h-1.5 bg-slate-100 rounded-full blur-sm mt-4 animate-pulse" />
+            </div>
           </div>
+
+          {/* Floating Search Icon */}
+          <motion.div
+            animate={{
+              x: [-20, 20, -20],
+              y: [-20, 10, -20],
+            }}
+            transition={{ duration: 6, repeat: Infinity }}
+            className="absolute -top-4 -right-4 w-14 h-14 bg-white border border-slate-100 shadow-lg rounded-2xl flex items-center justify-center text-indigo-600"
+          >
+            <FiSearch size={24} />
+          </motion.div>
         </div>
 
         {/* Heading */}
-        <h2 className="text-4xl md:text-5xl font-serif font-bold text-[#ffb247] mb-6 tracking-wide drop-shadow-lg">
-          Wisdom Lost
+        <h2 className="text-3xl md:text-5xl font-bold text-slate-900 mb-6 tracking-tight">
+          Lost in the{' '}
+          <span className="text-indigo-600 text-shadow-sm">Digital Ether</span>
         </h2>
 
         {/* Description */}
-        <p className="text-gray-400 text-lg leading-relaxed mb-10 px-4">
-          The chapter you seek has dissolved into the ether of time. Even the
-          most dedicated seekers find themselves at a dead end occasionally.
+        <p className="text-slate-500 text-base md:text-lg leading-relaxed mb-10 px-4 max-w-md">
+          The page you are looking for has been moved or no longer exists. Don't
+          worry, even the best explorers lose their way.
         </p>
 
         {/* Buttons */}
-        <div className="flex flex-col sm:flex-row items-center gap-4">
+        <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
           <Link
             href="/"
-            className="flex items-center gap-2 bg-[#ffb247] hover:bg-[#e6a03e] text-[#1a120b] px-8 py-3 rounded-xl font-bold transition-all duration-300 shadow-lg active:scale-95"
+            className="w-full sm:w-auto flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-4 rounded-2xl font-bold transition-all duration-300 shadow-xl shadow-indigo-100 active:scale-95"
           >
             <HiHome size={20} />
-            Return to Home
+            Back to Dashboard
           </Link>
 
           <Link
             href="/public-lessons"
-            className="bg-transparent hover:bg-white/5 text-gray-300 border border-white/10 hover:border-white/20 px-8 py-3 rounded-xl font-medium transition-all duration-300 active:scale-95"
+            className="w-full sm:w-auto bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 px-8 py-4 rounded-2xl font-bold transition-all duration-300 active:scale-95 shadow-sm"
           >
-            Search the Library
+            Browse Library
           </Link>
         </div>
       </div>
 
-      {/* Subtle vignette effect */}
-      <div className="absolute inset-0 pointer-events-none bg-radial-gradient from-transparent via-transparent to-black/60"></div>
+      {/* Subtle bottom gradient for depth */}
+      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-indigo-50/30 to-transparent pointer-events-none"></div>
     </div>
   );
 };
