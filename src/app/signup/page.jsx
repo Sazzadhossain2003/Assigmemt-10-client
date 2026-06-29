@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
-import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import { FaEye, FaEyeSlash, FaLink } from 'react-icons/fa'; // FaLink যোগ করা হয়েছে
 import { FcGoogle } from 'react-icons/fc';
 import { authClient } from '@/lib/auth-client';
 import toast, { Toaster } from 'react-hot-toast';
@@ -29,7 +29,7 @@ const RegisterPage = () => {
       name,
       email,
       password,
-      image,
+      image, // এই ফিল্ডটি এখন ফর্ম থেকে ডাটা পাবে
       role: 'user',
       plan: 'free',
     });
@@ -92,6 +92,21 @@ const RegisterPage = () => {
                 {errors.name.message}
               </p>
             )}
+          </div>
+
+          {/* Photo URL Field - নতুন ফিল্ড */}
+          <div className="space-y-2">
+            <label className="text-[10px] font-black uppercase text-slate-400 ml-1 tracking-widest">
+              Photo URL (Optional)
+            </label>
+            <div className="relative">
+              <input
+                type="url"
+                className={`w-full bg-slate-50 border border-slate-200 text-slate-900 placeholder:text-slate-400 rounded-2xl p-4 outline-none focus:border-indigo-600/30 transition-all font-bold ${errors.image ? 'border-rose-500' : ''}`}
+                placeholder="https://example.com/photo.jpg"
+                {...register('image')}
+              />
+            </div>
           </div>
 
           {/* Email Field */}
