@@ -11,9 +11,6 @@ import {
   Crown,
   TrendingUp,
   BrainCircuit,
-  ShieldCheck,
-  Activity,
-  BarChart3,
 } from 'lucide-react';
 import Link from 'next/link';
 import { authClient } from '@/lib/auth-client';
@@ -28,61 +25,14 @@ const BannerSection = () => {
   const [mounted, setMounted] = useState(false);
   const { data: session } = authClient.useSession();
 
-  const isPremium = session?.user?.role === 'premium';
+  // ইউজার রোল চেক করা
   const isAdmin = session?.user?.role === 'admin';
+  const isPremium =
+    session?.user?.role === 'premium' || session?.user?.plan === 'premium';
 
   useEffect(() => setMounted(true), []);
 
-  // --- অ্যাডমিনদের জন্য স্লাইডার ডাটা ---
-  const adminSliderData = [
-    {
-      id: 1,
-      image: '/asstes/img2.png',
-      badgeIcon: <ShieldCheck className="w-4 h-4" />,
-      badgeText: 'Administrative Access',
-      title: 'Command Center & System Oversight',
-      description:
-        'Manage users, monitor platform growth, and ensure the integrity of the collective wisdom database.',
-      btnPrimary: 'Go to Admin Panel',
-      pathPrimary: '/dashboard/admin',
-      btnSecondary: 'Manage Users',
-      pathSecondary: '/dashboard/admin/manage-users',
-      themeColor: '#6366f1',
-      rightCard: (
-        <div className="bg-white/10 backdrop-blur-2xl rounded-3xl p-8 border border-white/20 shadow-2xl">
-          <Activity className="text-indigo-400 mb-4" size={40} />
-          <h4 className="text-white font-bold">System Health</h4>
-          <p className="text-emerald-400 text-xs font-black mt-2">
-            ● ALL SYSTEMS OPERATIONAL
-          </p>
-        </div>
-      ),
-    },
-    {
-      id: 2,
-      image: '/asstes/img3.png',
-      badgeIcon: <BarChart3 className="w-4 h-4" />,
-      badgeText: 'Analytics Hub',
-      title: 'Platform Intelligence & Metrics',
-      description:
-        'Analyze user engagement and content performance. Keep the ecosystem thriving with data-driven insights.',
-      btnPrimary: 'View Analytics',
-      pathPrimary: '/dashboard/admin',
-      btnSecondary: 'Review Flags',
-      pathSecondary: '/dashboard/admin/reported-lessons',
-      themeColor: '#4f46e5',
-      rightCard: (
-        <div className="bg-white/10 backdrop-blur-2xl rounded-3xl p-8 border border-white/20 shadow-2xl">
-          <BarChart3 className="text-blue-400 mb-4" size={40} />
-          <h4 className="text-white font-bold">Traffic Growth</h4>
-          <p className="text-white/60 text-xs mt-2">+24% Increase this week</p>
-        </div>
-      ),
-    },
-  ];
-
-  // --- সাধারণ ইউজারদের জন্য স্লাইডার ডাটা ---
-  const userSliderData = [
+  const sliderData = [
     {
       id: 1,
       image: '/asstes/img2.png',
@@ -91,10 +41,13 @@ const BannerSection = () => {
       title: 'Every Experience Becomes A Life Lesson',
       description:
         'Document your breakthroughs, learn from collective experiences, and build a permanent digital archive.',
-      btnPrimary: 'Start Writing',
-      pathPrimary: '/dashboard/user/add-lesson',
-      btnSecondary: 'Explore Lessons',
-      pathSecondary: '/public-lessons',
+      // ডাইনামিক বাটন লজিক
+      btnPrimary: isAdmin ? 'Admin Dashboard' : 'Start Writing',
+      pathPrimary: isAdmin ? '/dashboard/admin' : '/dashboard/user/add-lesson',
+      btnSecondary: isAdmin ? 'Manage Lessons' : 'Explore Lessons',
+      pathSecondary: isAdmin
+        ? '/dashboard/admin/manage-lessons'
+        : '/public-lessons',
       themeColor: '#6366f1',
       rightCard: (
         <div className="relative w-full max-w-[350px] aspect-[4/3] bg-white/10 backdrop-blur-2xl rounded-3xl border border-white/20 p-8 shadow-2xl">
@@ -125,10 +78,13 @@ const BannerSection = () => {
       title: 'Discover Wisdom Shared By Thousands',
       description:
         'Join a global community of lifelong learners. Explore real stories that inspire career growth.',
-      btnPrimary: 'Browse Lessons',
-      pathPrimary: '/public-lessons',
-      btnSecondary: 'Join Community',
-      pathSecondary: '/signup',
+      // ডাইনামিক বাটন লজিক
+      btnPrimary: isAdmin ? 'User Directory' : 'Browse Lessons',
+      pathPrimary: isAdmin
+        ? '/dashboard/admin/manage-users'
+        : '/public-lessons',
+      btnSecondary: isAdmin ? 'Platform Settings' : 'Join Community',
+      pathSecondary: isAdmin ? '/dashboard/admin/profile' : '/signup',
       themeColor: '#4f46e5',
       rightCard: (
         <div className="relative w-full max-w-[380px] space-y-4">
@@ -152,10 +108,21 @@ const BannerSection = () => {
       title: 'Unlock Premium Knowledge Forever',
       description:
         'Get exclusive access to verified wisdom from world-class experts. Unlimited publishing.',
-      btnPrimary: isPremium ? 'View Dashboard' : 'Upgrade Premium',
-      pathPrimary: isPremium ? '/dashboard/user' : '/dashboard/user/upgrade',
-      btnSecondary: 'See Pricing',
-      pathSecondary: '/dashboard/user/upgrade',
+      // ডাইনামিক বাটন লজিক (অ্যাডমিনদের জন্য মডারেশন লিঙ্ক দেওয়া হলো)
+      btnPrimary: isAdmin
+        ? 'Moderation Hub'
+        : isPremium
+          ? 'View Dashboard'
+          : 'Upgrade Premium',
+      pathPrimary: isAdmin
+        ? '/dashboard/admin/reported-lessons'
+        : isPremium
+          ? '/dashboard/user'
+          : '/dashboard/user/upgrade',
+      btnSecondary: isAdmin ? 'Profile Admin' : 'See Pricing',
+      pathSecondary: isAdmin
+        ? '/dashboard/admin/profile'
+        : '/dashboard/user/upgrade',
       themeColor: '#d97706',
       rightCard: (
         <div className="relative w-full max-w-[400px]">
@@ -170,10 +137,10 @@ const BannerSection = () => {
             <div className="flex justify-between items-end">
               <div>
                 <p className="text-white/40 text-[10px] uppercase font-bold">
-                  Member Name
+                  Account
                 </p>
                 <p className="text-white font-bold">
-                  {session?.user?.name || 'PREMIUM MEMBER'}
+                  {session?.user?.name || 'MEMBER'}
                 </p>
               </div>
             </div>
@@ -182,9 +149,6 @@ const BannerSection = () => {
       ),
     },
   ];
-
-  // রোল অনুযায়ী ডাটা সেট করা
-  const activeSliderData = isAdmin ? adminSliderData : userSliderData;
 
   if (!mounted) return null;
 
@@ -203,7 +167,7 @@ const BannerSection = () => {
         loop={true}
         className="w-full h-full"
       >
-        {activeSliderData.map(slide => (
+        {sliderData.map(slide => (
           <SwiperSlide key={slide.id}>
             <div
               className="relative w-full h-full bg-cover bg-center flex items-center"
@@ -231,7 +195,7 @@ const BannerSection = () => {
                       initial={{ opacity: 0, y: 30 }}
                       whileInView={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.2 }}
-                      className="text-white text-5xl md:text-8xl font-black leading-[1.05] mb-8 tracking-tighter"
+                      className="text-white text-4xl md:text-8xl font-black leading-[1.05] mb-8 tracking-tighter"
                     >
                       {slide.title}
                     </motion.h1>
